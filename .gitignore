@@ -1,0 +1,8 @@
+# Ignorar arquivos de estado e lock do Terraform dentro da pasta terraform
+
+/terraform/.terraform/
+/terraform/.terraform.lock.hcl
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+/terraform/*.tfstate.*
+/terraform/*.tfplan
