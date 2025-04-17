@@ -19,15 +19,15 @@ resource "keycloak_authentication_execution" "username_password" {
 # Execução de autenticação com formulário de TOTP
 
 resource "keycloak_authentication_execution" "totp" {
-  realm_id          = keycloak_realm.baita.id                           # Referência ao ID do realm
-  parent_flow_alias = keycloak_authentication_flow.custom_browser.alias # Fluxo de autenticação associado
-  authenticator     = "auth-otp-form"                                   # Tipo de autenticação
-  requirement       = "ALTERNATIVE"                                     # Requisito
+  realm_id          = keycloak_realm.baita.id
+  parent_flow_alias = keycloak_authentication_flow.custom_browser.alias
+  authenticator     = "auth-otp-form"
+  requirement       = "ALTERNATIVE"
 }
 
 # Associando o fluxo de autenticação ao navegador para o realm
 
 resource "keycloak_authentication_bindings" "baita_bindings" {
-  realm_id     = keycloak_realm.baita.id                           # Referência ao ID do realm
+  realm_id     = keycloak_realm.baita.id
   browser_flow = keycloak_authentication_flow.custom_browser.alias # Fluxo de autenticação do navegador
 }
