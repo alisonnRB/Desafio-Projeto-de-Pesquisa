@@ -3,13 +3,13 @@
 terraform {
   required_providers {
     docker = {
-      source  = "kreuzwerker/docker" # Definindo o provedor Docker
-      version = "~> 2.0"             # Especificando a versão do provedor Docker
+      source  = "kreuzwerker/docker" # Mantém a versão do Docker
+      version = "~> 2.0"
     }
 
     keycloak = {
-      source  = "mrparkers/keycloak" # Definindo o provedor Keycloak
-      version = "~> 4.1.0"           # Especificando a versão do provedor Keycloak
+      source  = "mrparkers/keycloak"
+      version = "~> 4.3.0"
     }
   }
 }

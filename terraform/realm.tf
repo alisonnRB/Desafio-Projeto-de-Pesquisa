@@ -20,4 +20,3 @@ resource "keycloak_realm" "baita" {
     look_ahead_window = 1          # Número de janelas de tempo que podem ser verificadas (como margem de erro)
   }
 }
-
