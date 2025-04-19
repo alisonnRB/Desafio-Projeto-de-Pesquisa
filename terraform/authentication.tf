@@ -14,7 +14,6 @@ resource "keycloak_authentication_execution" "username_password" {
   parent_flow_alias = keycloak_authentication_flow.custom_browser.alias # Nome do fluxo ao qual essa execução pertence
   authenticator     = "auth-username-password-form"                     # Tipo de autenticação usada
   requirement       = "REQUIRED"                                        # Essa etapa é obrigatória
-  priority          = 0                                                 # Prioridade de execução
 }
 
 # Execução de autenticação com verificação TOTP (como app de autenticação de dois fatores)
@@ -23,7 +22,6 @@ resource "keycloak_authentication_execution" "totp" {
   parent_flow_alias = keycloak_authentication_flow.custom_browser.alias
   authenticator     = "auth-otp-form"
   requirement       = "ALTERNATIVE"
-  priority          = 1
 }
 
 # Associa o fluxo de autenticação personalizado ao navegador no realm
