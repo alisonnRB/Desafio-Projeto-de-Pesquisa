@@ -10,18 +10,20 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8080:8080"
+    networks:
+      - laravel
 
   ps:
     build:
       context: ../ps
-      dockerfile: ../ps/Dockerfile
+      dockerfile: Dockerfile
     working_dir: /var/www
     volumes:
       - ../ps:/var/www
     ports:
       - "8081:8000"
-
-
+    networks:
+      - laravel
 
 networks:
   laravel:
