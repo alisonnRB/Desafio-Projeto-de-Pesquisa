@@ -13,18 +13,48 @@ services:
     networks:
       - laravel
 
-  ps:
+  terraform:
     build:
-      context: ../ps
+      context: ../terraform
       dockerfile: Dockerfile
-    working_dir: /var/www
     volumes:
-      - ../ps:/var/www
-    ports:
-      - "8081:8000"
+      - ../terraform:/workspace
+    depends_on:
+      - keycloak
     networks:
       - laravel
+      
+  # mysql:
+  #   image: mysql:8
+  #   restart: always
+  #   environment:
+  #     MYSQL_DATABASE: laravel_db
+  #     MYSQL_USER: laravel_user
+  #     MYSQL_PASSWORD: laravel_pass
+  #     MYSQL_ROOT_PASSWORD: rootpass
+  #   ports:
+  #     - "3306:3306"
+  #   networks:
+  #     - laravel
+
+  # ps:
+  #   build:
+  #     context: ../ps
+  #     dockerfile: Dockerfile
+  #   working_dir: /var/www
+  #   volumes:
+  #     - ../ps:/var/www
+  #   ports:
+  #     - "8081:8000"
+  #   networks:
+  #     - laravel
+  #   depends_on:
+  #     - mysql
+  #     - terraform
 
 networks:
   laravel:
     driver: bridge
+
+volumes:
+  mysql_data:
