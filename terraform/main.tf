@@ -17,11 +17,11 @@ terraform {
 # Configurações do provedor Keycloak
 
 provider "keycloak" {
-  client_id     = "admin-cli"             # ID do cliente para autenticação no Keycloak
-  username      = "admin"                 # Nome de usuário admin para autenticação
-  password      = "admin"                 # Senha do usuário admin
-  client_secret = "admin"                 # ou uso de variável
-  url           = "http://localhost:8080" # URL do servidor Keycloak
-  realm         = "master"                # Realm no qual o provedor será autenticado
+  client_id     = "admin-cli"            # ID do cliente para autenticação no Keycloak
+  username      = "admin"                # Nome de usuário admin para autenticação
+  password      = "admin"                # Senha do usuário admin
+  client_secret = "admin"                # ou uso de variável
+  url           = "http://keycloak:8080" # URL do servidor Keycloak (dentro do docker)
+  realm         = "master"               # Realm no qual o provedor será autenticado
 }
 
