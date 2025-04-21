@@ -1,6 +1,26 @@
-version: "3.8"
-
 services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"] # Verifica se o mysql está respondendo na URL
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+    
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
     container_name: keycloak
@@ -24,21 +44,6 @@ services:
     networks:
       - laravel
       
-  mysql:
-    image: mysql:8
-    restart: always
-    environment:
-      MYSQL_DATABASE: laravel_db
-      MYSQL_USER: laravel_user
-      MYSQL_PASSWORD: laravel_pass
-      MYSQL_ROOT_PASSWORD: rootpass
-    ports:
-      - "3306:3306"
-    networks:
-      - laravel
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   ps:
     build:
       context: ../ps
@@ -51,8 +56,10 @@ services:
     networks:
       - laravel
     depends_on:
-      - mysql
-      - terraform
+      mysql:
+        condition: service_healthy
+      terraform:
+        condition: service_completed_successfully
 
 networks:
   laravel:
