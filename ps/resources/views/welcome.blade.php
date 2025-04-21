@@ -831,7 +831,20 @@
 </head>
 
 <body class="antialiased">
+    <button id="login-button" onclick="loginWithKeycloak()">Faça Login</button>
 
+    <script>
+        function loginWithKeycloak() {
+            const keycloakUrl = 'http://localhost:8080';  // URL do Keycloak
+            const realm = 'baita-realm';  // Nome do realm
+            const clientId = 'dynamic-client-registration';  // Client ID que você configurou no Keycloak
+            const redirectUri = 'http://localhost:8081/callback';  // URL de redirecionamento após login
+            const responseType = 'code';  // Tipo de resposta (Authorization Code Flow)
+
+            // Redireciona o usuário para o Keycloak
+            window.location.href = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/auth?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
+        }
+    </script>
 </body>
 
 </html>
