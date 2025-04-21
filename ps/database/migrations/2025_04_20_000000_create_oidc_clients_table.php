@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('client_id')->unique();
             $table->string('client_name');
-            $table->string('registration_access_token');
+            $table->longText('registration_access_token');
             $table->string('registration_client_uri');
             $table->json('redirect_uris')->nullable();
             $table->string('token_endpoint_auth_method')->nullable();

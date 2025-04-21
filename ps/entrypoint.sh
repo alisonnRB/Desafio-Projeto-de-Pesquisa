@@ -19,11 +19,6 @@ if [ ! -d vendor ]; then
     composer install --no-dev --optimize-autoloader
 fi
 
-until nc -z -v -w30 mysql 3306; do
-  echo "Aguardando MySQL..."
-  sleep 5
-done
-
 # Cria o banco
 php artisan migrate
 
