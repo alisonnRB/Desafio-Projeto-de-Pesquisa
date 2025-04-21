@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 # Instala pacotes necessários, incluindo o netcat
 RUN apt-get update && apt-get install -y \
