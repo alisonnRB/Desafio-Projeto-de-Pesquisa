@@ -22,5 +22,7 @@ fi
 # Cria o banco
 php artisan migrate
 
+php artisan registrar:oidc-client
+
 # Sobe o server Laravel
 php artisan serve --host=0.0.0.0 --port=8000

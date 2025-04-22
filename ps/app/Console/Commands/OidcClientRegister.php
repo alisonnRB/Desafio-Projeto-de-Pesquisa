@@ -1,34 +1,33 @@
 <?php
 
-namespace App\Services;
+namespace App\Console\Commands;
 
-use App\Models\OidcClient;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\OidcClient;
 
-class OidcClientRegistrar
+class OidcClientRegister extends Command
 {
-    public function __construct()
-    {
-        $this->registerClientIfNeeded();
-    }
+    protected $signature = 'registrar:oidc-client';
+    protected $description = 'Registra o OIDC client no Keycloak';
 
-    private function registerClientIfNeeded()
+    public function handle()
     {
         // Verifica se o cliente já foi registrado
         $clientExists = OidcClient::where('client_id', env('KEYCLOAK_CLIENT_ID'))->exists();
 
         if ($clientExists) {
-            return; // Cliente já existe, nada precisa ser feito
+            $this->info("Cliente OIDC já registrado.");
+            return;
         }
 
-        // Registra o cliente no Keycloak
         $keycloakUrl = env('KEYCLOAK_URL', 'http://localhost:8080');
         $realm = env('KEYCLOAK_REALM', 'baita-realm');
         $clientId = env('KEYCLOAK_CLIENT_ID', 'registrador');
         $clientSecret = env('KEYCLOAK_CLIENT_SECRET', 'secretKey');
 
-        // Obtém o token de acesso
+        // Obtém o token
         $tokenResponse = Http::asForm()->post("{$keycloakUrl}/realms/{$realm}/protocol/openid-connect/token", [
             'grant_type' => 'client_credentials',
             'client_id' => $clientId,
@@ -36,13 +35,13 @@ class OidcClientRegistrar
         ]);
 
         if (!$tokenResponse->successful()) {
+            $this->error("Erro ao obter token: " . $tokenResponse->body());
             Log::error("Erro ao obter token: " . $tokenResponse->body());
-            throw new \Exception("Erro ao obter token: " . $tokenResponse->body());
+            return;
         }
 
         $accessToken = $tokenResponse->json()['access_token'];
 
-        // Monta os dados do novo cliente
         $clientData = [
             "client_name" => "novo-client",
             "redirect_uris" => ["http://localhost:8081/callback"],
@@ -51,13 +50,11 @@ class OidcClientRegistrar
             "token_endpoint_auth_method" => "none",
         ];
 
-        // Registra o cliente no Keycloak
         $registrationResponse = Http::withToken($accessToken)
             ->withHeaders(['Content-Type' => 'application/json'])
             ->post("{$keycloakUrl}/realms/{$realm}/clients-registrations/openid-connect", $clientData);
 
         if ($registrationResponse->status() === 201) {
-            // Salva as informações do cliente no banco de dados
             OidcClient::create([
                 'client_id' => $registrationResponse->json()['client_id'],
                 'client_name' => $registrationResponse->json()['client_name'],
@@ -69,9 +66,11 @@ class OidcClientRegistrar
                 'response_types' => json_encode($registrationResponse->json()['response_types'] ?? []),
                 'scopes' => json_encode($registrationResponse->json()['scopes'] ?? []),
             ]);
+
+            $this->info("Cliente OIDC registrado com sucesso!");
         } else {
+            $this->error("Erro ao registrar client: " . $registrationResponse->body());
             Log::error("Erro ao registrar client: " . $registrationResponse->body());
-            throw new \Exception("Erro ao registrar client: " . $registrationResponse->body());
         }
     }
 }
