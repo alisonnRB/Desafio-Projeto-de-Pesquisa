@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('Auth/login');
 });
 
-use App\Http\Controllers\AuthCallbackController;
+Route::get('/callback', function () {
+    return view('Auth/callback');
+});
 
-// Route::get('/callback', [AuthCallbackController::class, 'handleCallback']);
 
