@@ -8,7 +8,7 @@ resource "keycloak_openid_client" "dynamic_client_registration" {
   access_type                  = "PUBLIC"                           # Tipo de acesso (sem uso de secret)
   standard_flow_enabled        = true                               # Permite o uso do Authorization Code Flow
   direct_access_grants_enabled = true                               # Permite login direto
-  valid_redirect_uris          = ["http://localhost:3000/callback"] # URIs válidas para redirecionamento após login
+  valid_redirect_uris          = ["http://localhost:8081/callback"] # URIs válidas para redirecionamento após login
 }
 
 # Criação de um cliente confidencial que atuará como registrador de outros clientes

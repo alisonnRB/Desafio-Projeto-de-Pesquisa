@@ -12,65 +12,109 @@ class OidcClientRegister extends Command
     protected $signature = 'registrar:oidc-client';
     protected $description = 'Registra o OIDC client no Keycloak';
 
+    private $keycloakUrl;
+    private $realm;
+    private $clientId;
+    private $clientSecret;
+    private $clientData;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->keycloakUrl = config('oidc.keycloak_url');
+        $this->realm = config('oidc.realm');
+        $this->clientId = config('oidc.client_id');
+        $this->clientSecret = config('oidc.client_secret');
+        $this->clientData = [
+            "client_name" => config("oidc.client_name"),
+            "redirect_uris" => ["http://localhost:8081/callback"],
+            "grant_types" => ["authorization_code"],
+            "response_types" => ["code"],
+            "token_endpoint_auth_method" => "none",
+        ];
+    }
+
     public function handle()
     {
-        // Verifica se o cliente já foi registrado
-        $clientExists = OidcClient::where('client_id', env('KEYCLOAK_CLIENT_ID'))->exists();
 
-        if ($clientExists) {
+        // Verifica se o cliente já foi registrado
+        if ($this->bdRecordsverify()) {
             $this->info("Cliente OIDC já registrado.");
             return;
         }
 
-        $keycloakUrl = env('KEYCLOAK_URL', 'http://localhost:8080');
-        $realm = env('KEYCLOAK_REALM', 'baita-realm');
-        $clientId = env('KEYCLOAK_CLIENT_ID', 'registrador');
-        $clientSecret = env('KEYCLOAK_CLIENT_SECRET', 'secretKey');
+        // busca o token de acesso keycloak
+        $accessToken = $this->getAccessTokens();
+        if (!$accessToken) {
+            return;
+        }
+
+        // Registra o client da aplicação
+        $registrationResponse = $this->dynamicClientRegistrate($accessToken);
+
+        // verifica o status da criação do cliente
+        if ($registrationResponse->status() === 201) {
+
+            // Armazena os dados do client
+            $this->bdClientRegistrate($registrationResponse);
+            $this->info("Cliente OIDC registrado com sucesso!");
+
+        } else {
+            $this->error("Erro ao registrar client: " . $registrationResponse->body());
+            Log::error("Erro ao registrar client: " . $registrationResponse->body());
+        }
+    }
+
+    // verifica a existencia do client
+    private function bdRecordsverify(): bool
+    {
+        return OidcClient::where('client_id', $this->clientId)->exists();
+    }
+
+    // Busca o Token de acesso
+    private function getAccessTokens()
+    {
 
         // Obtém o token
-        $tokenResponse = Http::asForm()->post("{$keycloakUrl}/realms/{$realm}/protocol/openid-connect/token", [
+        $tokenResponse = Http::asForm()->post("{$this->keycloakUrl}/realms/{$this->realm}/protocol/openid-connect/token", [
             'grant_type' => 'client_credentials',
-            'client_id' => $clientId,
-            'client_secret' => $clientSecret,
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
         ]);
 
+        // verfica se o token foi obtido
         if (!$tokenResponse->successful()) {
             $this->error("Erro ao obter token: " . $tokenResponse->body());
             Log::error("Erro ao obter token: " . $tokenResponse->body());
             return;
         }
 
-        $accessToken = $tokenResponse->json()['access_token'];
-
-        $clientData = [
-            "client_name" => "novo-client",
-            "redirect_uris" => ["http://localhost:8081/callback"],
-            "grant_types" => ["authorization_code"],
-            "response_types" => ["code"],
-            "token_endpoint_auth_method" => "none",
-        ];
-
+        return $tokenResponse->json()['access_token'];
+    }
+    // Registra o novo cliente dinamicamente
+    private function dynamicClientRegistrate($accessToken)
+    {
         $registrationResponse = Http::withToken($accessToken)
             ->withHeaders(['Content-Type' => 'application/json'])
-            ->post("{$keycloakUrl}/realms/{$realm}/clients-registrations/openid-connect", $clientData);
+            ->post("{$this->keycloakUrl}/realms/{$this->realm}/clients-registrations/openid-connect", $this->clientData);
 
-        if ($registrationResponse->status() === 201) {
-            OidcClient::create([
-                'client_id' => $registrationResponse->json()['client_id'],
-                'client_name' => $registrationResponse->json()['client_name'],
-                'registration_access_token' => $registrationResponse->json()['registration_access_token'],
-                'registration_client_uri' => $registrationResponse->json()['registration_client_uri'],
-                'redirect_uris' => json_encode($registrationResponse->json()['redirect_uris'] ?? []),
-                'token_endpoint_auth_method' => $registrationResponse->json()['token_endpoint_auth_method'] ?? null,
-                'grant_types' => json_encode($registrationResponse->json()['grant_types'] ?? []),
-                'response_types' => json_encode($registrationResponse->json()['response_types'] ?? []),
-                'scopes' => json_encode($registrationResponse->json()['scopes'] ?? []),
-            ]);
+        return $registrationResponse;
+    }
 
-            $this->info("Cliente OIDC registrado com sucesso!");
-        } else {
-            $this->error("Erro ao registrar client: " . $registrationResponse->body());
-            Log::error("Erro ao registrar client: " . $registrationResponse->body());
-        }
+    // Guarda as informaçoes do client no BD
+    private function bdClientRegistrate($registrationData)
+    {
+        OidcClient::create([
+            'client_id' => $registrationData->json()['client_id'],
+            'client_name' => $registrationData->json()['client_name'],
+            'registration_access_token' => $registrationData->json()['registration_access_token'],
+            'registration_client_uri' => $registrationData->json()['registration_client_uri'],
+            'redirect_uris' => json_encode($registrationData->json()['redirect_uris'] ?? []),
+            'token_endpoint_auth_method' => $registrationData->json()['token_endpoint_auth_method'] ?? null,
+            'grant_types' => json_encode($registrationData->json()['grant_types'] ?? []),
+            'response_types' => json_encode($registrationData->json()['response_types'] ?? []),
+            'scopes' => json_encode($registrationData->json()['scopes'] ?? []),
+        ]);
     }
 }
