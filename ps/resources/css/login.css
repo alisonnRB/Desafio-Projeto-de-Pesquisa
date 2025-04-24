@@ -1,0 +1,23 @@
+body {
+    font-family: 'Figtree', sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#login-button {
+    padding: 1rem 2rem;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    transition: background-color 0.2s;
+}
+
+#login-button:hover {
+    background-color: #4f46e5;
+}
