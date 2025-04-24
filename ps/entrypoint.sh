@@ -19,10 +19,18 @@ if [ ! -d vendor ]; then
     composer install --no-dev --optimize-autoloader
 fi
 
+#limpeza
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+
 # Cria o banco
 php artisan migrate
 
 php artisan registrar:oidc-client
+
+#necessario para execução do build vite
+npm run build
 
 # Sobe o server Laravel
 php artisan serve --host=0.0.0.0 --port=8000
