@@ -1,16 +1,3 @@
-# Criação de um cliente OpenID público que será usado para registrar outros clientes dinamicamente
-
-resource "keycloak_openid_client" "dynamic_client_registration" {
-  realm_id                     = keycloak_realm.baita.id            # ID do realm onde o cliente será criado
-  client_id                    = "dynamic-client-registration"      # ID único do cliente
-  name                         = "Dynamic Client Registration"      # Nome descritivo do cliente
-  enabled                      = true                               # Habilita o cliente
-  access_type                  = "PUBLIC"                           # Tipo de acesso (sem uso de secret)
-  standard_flow_enabled        = true                               # Permite o uso do Authorization Code Flow
-  direct_access_grants_enabled = true                               # Permite login direto
-  valid_redirect_uris          = ["http://localhost:8081/callback"] # URIs válidas para redirecionamento após login
-}
-
 # Criação de um cliente confidencial que atuará como registrador de outros clientes
 
 resource "keycloak_openid_client" "client_registrador" {
@@ -39,3 +26,5 @@ resource "keycloak_openid_client_service_account_role" "registrador_manage_clien
   client_id               = data.keycloak_openid_client.realm_management.id                   # ID do cliente
   role                    = "manage-clients"                                                  # Nome da role que permite gerenciar clientes
 }
+
+
