@@ -8,6 +8,7 @@ document.getElementById('login-button').addEventListener('click', async () => {
     const redirectUri = "http://localhost:8081/callback";
 
     const responseType = 'code';
+    const scope = 'openid email profile';
 
-    window.location.href = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/auth?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    window.location.href = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/auth?response_type=${responseType}&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
 });

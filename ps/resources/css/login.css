@@ -21,3 +21,8 @@ body {
 #login-button:hover {
     background-color: #4f46e5;
 }
+
+#denied {
+    color: red;
+    text-align: center;
+}

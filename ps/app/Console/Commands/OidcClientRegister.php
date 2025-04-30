@@ -31,7 +31,7 @@ class OidcClientRegister extends Command
             "redirect_uris" => ["http://localhost:8081/callback"],
             "grant_types" => ["authorization_code"],
             "response_types" => ["code"],
-            "token_endpoint_auth_method" => "none",
+            "token_endpoint_auth_method" => "client_secret_post",
         ];
     }
 
@@ -58,6 +58,7 @@ class OidcClientRegister extends Command
 
             // Armazena os dados do client
             $this->bdClientRegistrate($registrationResponse);
+            $this->addAcrMapper($registrationResponse);
             $this->info("Cliente OIDC registrado com sucesso!");
 
         } else {
@@ -108,6 +109,7 @@ class OidcClientRegister extends Command
         OidcClient::create([
             'client_id' => $registrationData->json()['client_id'],
             'client_name' => $registrationData->json()['client_name'],
+            'client_secret' => $registrationData->json()['client_secret'],
             'registration_access_token' => $registrationData->json()['registration_access_token'],
             'registration_client_uri' => $registrationData->json()['registration_client_uri'],
             'redirect_uris' => json_encode($registrationData->json()['redirect_uris'] ?? []),
@@ -117,4 +119,33 @@ class OidcClientRegister extends Command
             'scopes' => json_encode($registrationData->json()['scopes'] ?? []),
         ]);
     }
+
+    private function addAcrMapper($registrationResponse)
+    {
+        $clientUri = $registrationResponse->json()['registration_client_uri'];
+        $registrationToken = $registrationResponse->json()['registration_access_token'];
+
+        $acrMapper = [
+            "name" => "acr-mapper",
+            "protocol" => "openid-connect",
+            "protocolMapper" => "oidc-acr-mapper",
+            "consentRequired" => false,
+            "config" => [
+                "id.token.claim" => "true",
+                "access.token.claim" => "true",
+                "claim.name" => "acr",
+                "jsonType.label" => "String"
+            ]
+        ];
+
+        // Envia o mapper para o cliente registrado
+        $response = Http::withToken($registrationToken)
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->post($clientUri . '/protocol-mappers/models', $acrMapper);
+
+        if (!$response->successful()) {
+            Log::error("Erro ao adicionar acr-mapper: " . $response->body());
+        }
+    }
+
 }

@@ -29,8 +29,10 @@ php artisan migrate
 
 php artisan registrar:oidc-client
 
+npm install
+
 #necessario para execução do build vite
-npm run build
+npx vite build
 
 # Sobe o server Laravel
 php artisan serve --host=0.0.0.0 --port=8000

@@ -9,6 +9,7 @@ class OidcClient extends Model
     protected $fillable = [
         'client_id',
         'client_name',
+        'client_secret',
         'registration_access_token',
         'registration_client_uri',
         'redirect_uris',
