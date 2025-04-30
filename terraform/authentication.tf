@@ -83,6 +83,7 @@ resource "keycloak_authentication_execution_config" "loa_2_condition_config" {
 
   config = {
     "loa-condition-level" = "2"
+    "loa-max-age"         = 35000
   }
 }
 
