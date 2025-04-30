@@ -9,10 +9,6 @@ resource "keycloak_user" "user1" {
   enabled        = true                    # O usuário estará habilitado
   email_verified = true
 
-  attributes = {
-    nivel_acesso = "baixo" # Nível de acesso configurado como "baixo" (somente senha)
-  }
-
 
   # Definição da senha inicial do usuário
   initial_password {
@@ -31,10 +27,6 @@ resource "keycloak_user" "user2" {
   email          = "user2@exemplo.com"
   enabled        = true
   email_verified = true
-
-  attributes = {
-    nivel_acesso = "baixo" # Nível de acesso configurado como "baixo" (somente senha)
-  }
 
 
   initial_password {
