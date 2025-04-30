@@ -10,6 +10,10 @@ resource "keycloak_openid_client" "client_registrador" {
   standard_flow_enabled        = false       # Desativa o Authorization Code Flow
   direct_access_grants_enabled = false       # Desativa login direto com usuário e senha
   client_secret                = "secretKey" # secret usado para autenticação do cliente
+
+  authentication_flow_binding_overrides {
+    browser_id = keycloak_authentication_flow.custom_browser.id
+  }
 }
 
 # Obtém informações do cliente interno do Keycloak responsável por gerenciamento do realm

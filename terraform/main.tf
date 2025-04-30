@@ -9,7 +9,7 @@ terraform {
 
     keycloak = {
       source  = "keycloak/keycloak" # Usa o provedor principal
-      version = ">= 5.0.0"
+      version = ">= 5.2.0"
     }
   }
 }
