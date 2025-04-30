@@ -1,28 +1,54 @@
 body {
-    font-family: 'Figtree', sans-serif;
-    background-color: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    overflow: hidden;
+    font-weight: bolder;
     height: 100vh;
+    width: 100vw;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.logo-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-box .panda {
+    height: 20vh;
+    aspect-ratio: 1.08;
+}
+
+.login h1 {
+    font-size: clamp(2rem, 4vw, 8vw);
+    text-align: center;
 }
 
 #login-button {
     padding: 1rem 2rem;
-    background-color: #6366f1;
+    background-color: #A8D4EA;
     color: white;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 3vw, 6vw);
+    font-weight: bolder;
     transition: background-color 0.2s;
 }
 
-#login-button:hover {
-    background-color: #4f46e5;
+.login p {
+    font-size: clamp(1rem, 1.7vw, 3vw);
+    text-align: center;
 }
 
-#denied {
-    color: red;
-    text-align: center;
+#login-button:hover {
+    background-color: #93cce9;
 }

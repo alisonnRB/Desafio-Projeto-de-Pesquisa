@@ -25,9 +25,7 @@ class OidcAuthController extends Controller
         // Obtemos as infos do usuário
         $userInfo = $this->getUserInfos($tokens);
 
-        dd($userInfo);
-
-        if ($userInfo['acr'] < 5) {
+        if ($userInfo['acr'] != 2) {
             return redirect('/denied')->with('error', 'negado');
         }
 
@@ -87,6 +85,7 @@ class OidcAuthController extends Controller
                 'name' => $userInfo['name'],
                 'preferred_username' => $userInfo['preferred_username'],
                 'password' => "default",
+                'acr' => $userInfo['acr'],
             ]
         );
 
