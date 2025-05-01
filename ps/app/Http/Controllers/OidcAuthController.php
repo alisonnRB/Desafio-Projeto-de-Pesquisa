@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 
 class OidcAuthController extends Controller
 {
@@ -90,6 +91,15 @@ class OidcAuthController extends Controller
         );
 
         return $user;
+    }
+
+    public function logout(): JsonResponse
+    {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return response()->json(['message' => 'Logout realizado com sucesso']);
     }
 
 }
