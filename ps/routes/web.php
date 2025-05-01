@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\OidcAuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserInfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('Auth/login');
-});
+})->name('login');
 
 Route::get('/denied', function () {
     return view('Auth/loginDenied');
@@ -24,6 +25,12 @@ Route::get('/denied', function () {
 
 Route::get('/callback', [OidcAuthController::class, 'handleCallback']);
 
-Route::get('/home', function () {
-    return view('/home');
+Route::post('/keycloak/logout', [UserInfoController::class, 'logout']);
+
+Route::middleware('auth')->group(function () {
+    Route::get('/home', function () {
+        return view('/home');
+    });
+
+    Route::get('/keycloak/userInfo', [OidcAuthController::class, 'getUser']);
 });
