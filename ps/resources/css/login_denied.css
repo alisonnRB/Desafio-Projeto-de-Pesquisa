@@ -66,7 +66,7 @@ body {
 }
 
 .denied {
-    color: red;
+    color: #FF0004;
     font-size: clamp(1rem, 2.5vw, 5vw);
     width: 35%;
 }

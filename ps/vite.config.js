@@ -6,9 +6,12 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/login.css',
-                'resources/css/login_denied.css',  // ou outro arquivo CSS
+                'resources/css/login_denied.css',
+                'resources/css/home.css',
                 'resources/js/login.js',
-                'resources/js/login_denied.js',  // ou outro arquivo JS
+                'resources/js/login_denied.js',
+                'resources/js/home.js',
+
             ],
             refresh: true,
         }),
