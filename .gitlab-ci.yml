@@ -13,34 +13,29 @@ variables:
 
 test:
   stage: test
-  script:
-    - docker compose -f docker/docker-compose.yml up -d
+  script: |
+    docker compose -f docker/docker-compose.yml up -d
 
-    - echo "Aguardando o PS subir (verificando php artisan)..."
-      for i in {1..60}; do
+    echo "Aguardando o PS subir (verificando php artisan)..."
+    for i in {1..60}; do
       if docker compose -f docker/docker-compose.yml exec ps php artisan --version >/dev/null 2>&1; then
-      echo "PS pronto!"
-      break
+        echo "PS pronto!"
+        break 
       fi
 
       if [ $i -eq 60 ]; then
-      echo "Timeout aguardando o PS. Exibindo logs para depuração:"
-      docker compose -f docker/docker-compose.yml logs ps
-      exit 1
+        echo "Timeout aguardando o PS. Exibindo logs para depuração:"
+        docker compose -f docker/docker-compose.yml logs ps 
+        exit 1 
       fi
       echo "Aguardando..."
       sleep 1
-      done
+    done
 
-    - echo "Executando testes..."
-    - docker compose -f docker/docker-compose.yml exec ps php artisan test --env=testing
-
+    echo "Executando testes..."
+    docker compose -f docker/docker-compose.yml exec ps php artisan test --env=testing
   only:
     - main
-
-  # Clean up containers and networks after the script runs
   after_script:
     - echo "Limpando containers..."
-    # Use --volumes to remove named volumes defined in docker-compose (be careful)
-    # Use --remove-orphans to remove containers for services not defined in the compose file anymore
     - docker compose -f docker/docker-compose.yml down --volumes --remove-orphans
