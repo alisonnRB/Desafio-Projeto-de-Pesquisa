@@ -14,7 +14,7 @@ variables:
 test:
   stage: test
   script: |
-    docker compose -f docker/docker-compose.yml up -d
+    docker compose -f docker/docker-compose.yml up --build
 
     echo "Instalando dependências Composer..."
     docker compose -f docker/docker-compose.yml exec ps composer install --optimize-autoloader || exit 1
@@ -40,8 +40,11 @@ test:
        exit 1
     fi
 
+    docker compose docker/docker-compose.yml exec ps php composer self-update
+    ocker compose docker/docker-compose.yml exec ps php composer require --dev phpunit/phpunit
+
     echo "Executando testes..."
-    docker compose -f docker/docker-compose.yml exec ps php artisan test --env=testing || exit 1 # Exit job if tests fail
+    docker compose docker/docker-compose.yml exec ps php artisan test --env=testing || exit 1 # Exit job if tests fail
   only:
     - main
   after_script:
