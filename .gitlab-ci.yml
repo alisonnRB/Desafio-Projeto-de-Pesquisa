@@ -25,16 +25,16 @@ build:
 test:
   stage: test
   script:
-    - docker compose -f docker-compose.yml up -d
+    - docker compose -f docker/docker-compose.yml up -d
     - echo "Aguardando o PS subir..."
       for i in {1..30}; do
-      if docker compose -f docker-compose.yml exec ps php artisan --version >/dev/null 2>&1; then
+      if docker compose -f docker/docker-compose.yml exec ps php artisan --version >/dev/null 2>&1; then
       echo "PS pronto!"
       break
       fi
       echo "Aguardando..."
       sleep 2
       done
-    - docker compose -f docker-compose.yml exec ps php artisan test --env=testing
+    - docker compose -f docker/docker-compose.yml exec ps php artisan test --env=testing
   only:
     - main
