@@ -5,6 +5,7 @@ services:
 
 stages:
   - build
+  - test
 
 variables:
   DOCKER_HOST: tcp://docker:2375/
@@ -18,5 +19,12 @@ build:
   stage: build
   script:
     - docker-compose -f docker/docker-compose.yml build
+  only:
+    - main
+
+test:
+  stage: test
+  script:
+    - docker compose exec ps php artisan key:generate test --env=testing
   only:
     - main
