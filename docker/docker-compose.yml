@@ -16,7 +16,7 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"] # Verifica se o mysql está respondendo na URL
       interval: 10s
-      retries: 5
+      retries: 10
       start_period: 10s
       timeout: 10s
     
@@ -24,7 +24,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
-    command: start-dev --features=scripts #habilita recursos de script 
+    command: start-dev --features=scripts
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
