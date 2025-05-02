@@ -28,7 +28,29 @@ resource "keycloak_openid_client_service_account_role" "registrador_manage_clien
   realm_id                = keycloak_realm.baita.id                                           # Realm onde a permissão será aplicada
   service_account_user_id = keycloak_openid_client.client_registrador.service_account_user_id # ID da conta de serviço do cliente
   client_id               = data.keycloak_openid_client.realm_management.id                   # ID do cliente
-  role                    = "manage-clients"                                                  # Nome da role que permite gerenciar clientes
+  role                    = "manage-clients"         
 }
 
 
+resource "keycloak_openid_client_default_scopes" "client_default_scopes" {
+  realm_id  = keycloak_realm.baita.id
+  client_id = keycloak_openid_client.client_registrador.id
+
+  default_scopes = [
+    "acr",
+    "profile",
+    "email",
+    keycloak_openid_client_scope.user_attrs_scope.name,
+  ]
+}
+
+resource "keycloak_realm_default_client_scopes" "default_scopes" {
+  realm_id  = keycloak_realm.baita.id
+
+  default_scopes = [
+    "acr",
+    "profile",
+    "email",
+    keycloak_openid_client_scope.user_attrs_scope.name,
+  ]
+}

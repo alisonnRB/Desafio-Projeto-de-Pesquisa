@@ -20,3 +20,20 @@ resource "keycloak_realm" "baita" {
     look_ahead_window = 1          # Número de janelas de tempo que podem ser verificadas (como margem de erro)
   }
 }
+
+
+resource "keycloak_realm_user_profile" "baita_user_profile" {
+  realm_id = keycloak_realm.baita.id
+
+  unmanaged_attribute_policy = "ENABLED"
+
+  attribute {
+    name = "username"
+    display_name = "username"
+  }
+
+  attribute {
+    name = "email"
+    display_name = "email"
+  }
+}
