@@ -14,24 +14,17 @@ variables:
 test:
   stage: test
   script: |
-    # The script content below will be treated as a single multi-line string
+    docker compose -f docker/docker-compose.yml up -d
 
-    # Start services in detached mode
-    docker compose -f docker-compose.yml up -d
-
-    # --- Install Composer Dependencies ---
-    # Execute composer install inside the 'ps' container.
     echo "Instalando dependências Composer..."
-    docker compose -f docker-compose.yml exec ps composer install --no-dev --optimize-autoloader || exit 1
+    docker compose -f docker/docker-compose.yml exec ps composer install --no-dev --optimize-autoloader || exit 1
     echo "Dependências instaladas."
-    # -------------------------------------
 
-    # Wait for the 'ps' service to be ready using a standard sh-compatible while loop
     echo "Aguardando o PS subir (verificando php artisan)..."
     count=0
     ready=false
     while [ $count -lt 60 ]; do
-      if docker compose -f docker-compose.yml exec ps php artisan --version >/dev/null 2>&1; then
+      if docker compose -f docker/docker-compose.yml exec ps php artisan --version >/dev/null 2>&1; then
         echo "PS pronto!"
         ready=true
         break
@@ -41,16 +34,14 @@ test:
       count=$((count+1))
     done
 
-    # Check if the service became ready after the loop finished
     if [ "$ready" = false ]; then
        echo "Timeout aguardando o PS. Exibindo logs para depuração:"
-       docker compose -f docker-compose.yml logs ps
+       docker compose -f docker/docker-compose.yml logs ps
        exit 1
     fi
 
-    # Execute the tests inside the 'ps' service container
     echo "Executando testes..."
-    docker compose -f docker-compose.yml exec ps php artisan test --env=testing || exit 1 # Exit job if tests fail
+    docker compose -f docker/docker-compose.yml exec ps php artisan test --env=testing || exit 1 # Exit job if tests fail
   only:
     - main
   after_script:
