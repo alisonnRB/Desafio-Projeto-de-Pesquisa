@@ -17,7 +17,7 @@ test:
     docker compose -f docker/docker-compose.yml up -d
 
     echo "Instalando dependências Composer..."
-    docker compose -f docker/docker-compose.yml exec ps composer install --no-dev --optimize-autoloader || exit 1
+    docker compose -f docker/docker-compose.yml exec ps composer install --optimize-autoloader || exit 1
     echo "Dependências instaladas."
 
     echo "Aguardando o PS subir (verificando php artisan)..."
