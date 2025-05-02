@@ -11,13 +11,6 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   COMPOSE_PROJECT_NAME: "gtbaita"
 
-build:
-  stage: build
-  script:
-    - docker compose -f docker/docker-compose.yml build
-  only:
-    - main
-
 test:
   stage: test
   script:
