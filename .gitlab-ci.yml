@@ -1,0 +1,22 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
+  COMPOSE_PROJECT_NAME: "gtbaita"
+
+before_script:
+  - apk add --no-cache docker-compose
+
+build:
+  stage: build
+  script:
+    - docker-compose -f docker/docker-compose.yml build
+  only:
+    - main
