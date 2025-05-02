@@ -25,7 +25,7 @@ test:
     docker compose -f docker/docker-compose.yml up --build -d
 
     echo "Instalando dependências Composer..."
-    docker compose -f docker/docker-compose.yml exec ps composer install --optimize-autoloader || exit 1
+    docker compose -f docker/docker-compose.yml exec ps composer install --optimize-autoloader --no-scripts || exit 1
     echo "Dependências instaladas."
 
     echo "Aguardando o PS subir (verificando php artisan)..."
@@ -43,16 +43,14 @@ test:
     done
 
     if [ "$ready" = false ]; then
-       echo "Timeout aguardando o PS. Exibindo logs para depuração:"
-       docker compose -f docker/docker-compose.yml logs ps
-       exit 1
+      echo "Timeout aguardando o PS. Exibindo logs para depuração:"
+      docker compose -f docker/docker-compose.yml logs ps
+      exit 1
     fi
-
-    docker compose -f docker/docker-compose.yml exec ps composer self-update
-    docker compose -f docker/docker-compose.yml exec ps composer require --dev phpunit/phpunit
 
     echo "Executando testes..."
     docker compose -f docker/docker-compose.yml exec ps php artisan test --env=testing || exit 1
+
   only:
     - main
 
