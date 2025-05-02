@@ -23,6 +23,8 @@ class OidcAuthController extends Controller
 
         $tokens = $this->tokenRequest($request->get('code'));
 
+
+
         // Obtemos as infos do usuário
         $userInfo = $this->getUserInfos($tokens);
 
@@ -87,6 +89,9 @@ class OidcAuthController extends Controller
                 'preferred_username' => $userInfo['preferred_username'],
                 'password' => "default",
                 'acr' => $userInfo['acr'],
+                'departamento' => $userInfo["departamento"] ?? null,
+                'cargo' => $userInfo["cargo"] ?? null,
+                'senioridade' => $userInfo["senioridade"] ?? null,
             ]
         );
 

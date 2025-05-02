@@ -25,12 +25,12 @@ Route::get('/denied', function () {
 
 Route::get('/callback', [OidcAuthController::class, 'handleCallback']);
 
-Route::post('/keycloak/logout', [UserInfoController::class, 'logout']);
+Route::post('/keycloak/logout', [OidcAuthController::class, 'logout']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
         return view('/home');
     });
 
-    Route::get('/keycloak/userInfo', [OidcAuthController::class, 'getUser']);
+    Route::get('/keycloak/userInfo', [UserInfoController::class, 'getUser']);
 });
