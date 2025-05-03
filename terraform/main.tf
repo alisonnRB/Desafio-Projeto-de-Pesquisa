@@ -2,11 +2,6 @@
 
 terraform {
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker" # Mantém a versão do Docker
-      version = "~> 2.0"
-    }
-
     keycloak = {
       source  = "keycloak/keycloak" # Usa o provedor principal
       version = ">= 5.2.0"
