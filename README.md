@@ -9,6 +9,15 @@ Desafio técnico do processo seletivo aberto para integrar o GT-BAITA, Construir
 - **PS:** Laravel, Vite, PHP, mySql
 - **Infraestrutura:** Docker, Terraform
 
+---
+
+## ✏️ Visão geral da infraestrutura docker:
+
+![Texto alternativo](./infra_dokcer.png)
+
+---
+
+
 ## 📂 Estrutura do Projeto
 
 ```
@@ -74,7 +83,7 @@ Antes de iniciar, certifique-se de ter instalado:
 
 ---
 
-## 🚀 Como fazer um registro dinamico
+## 📨 Como fazer um registro dinamico
 
 1. **Obtenha um token de acesso do Keycloak (via client credentials)**
    (Com a aplicação rodando)
@@ -86,7 +95,7 @@ Antes de iniciar, certifique-se de ter instalado:
    -d "client_secret=secretKey"
    ```
    (Lembre-se caso o PI estiver em produção, um registrador publico deve ser criado)
-   
+
 2. **Registre dinamicamente seu cliente**
    Com o token de acesso obtido e sua rota de callback, envie os dados do cliente para o endpoint de registro dinâmico:
 
