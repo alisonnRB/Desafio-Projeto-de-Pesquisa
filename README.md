@@ -13,7 +13,7 @@ Desafio técnico do processo seletivo aberto para integrar o GT-BAITA, Construir
 
 ## ✏️ Visão geral da infraestrutura docker:
 
-![Texto alternativo](./infra_dokcer.png)
+![Texto alternativo](./infra_docker.png)
 
 ---
 
