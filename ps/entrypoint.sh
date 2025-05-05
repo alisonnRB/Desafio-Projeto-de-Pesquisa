@@ -20,11 +20,11 @@ php artisan view:clear
 
 # Instala dependências se necessário
 if [ ! -d vendor ]; then
-    composer install --no-dev --optimize-autoloader
+    composer install
 fi
 
 composer self-update
-composer require --dev phpunit/phpunit
+composer require -dev phpunit/phpunit
 
 if ! grep -q "^APP_KEY=base64" .env.testing; then
     php artisan key:generate --env=testing
